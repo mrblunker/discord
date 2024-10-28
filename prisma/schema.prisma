@@ -1,7 +1,6 @@
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -9,11 +8,11 @@ generator client {
 }
 
 model Profile {
-  id       String    @id @default(uuid())
+  id       String    @id @default(auto()) @map("_id")
   userId   String    @unique
   name     String
-  imageUrl String    @db.Text
-  email    String    @db.Text
+  imageUrl String
+  email    String
   servers  Server[]
   members  Member[]
   channels Channel[]
@@ -23,9 +22,9 @@ model Profile {
 }
 
 model Server {
-  id         String @id @default(uuid())
+  id         String @id @default(auto()) @map("_id")
   name       String
-  imageUrl   String @db.Text
+  imageUrl   String
   inviteCode String @unique
 
   profileId String
@@ -47,7 +46,7 @@ enum MemberRole {
 }
 
 model Member {
-  id   String     @id @default(uuid())
+  id   String     @id @default(auto()) @map("_id")
   role MemberRole @default(GUEST)
 
   profileId String
@@ -76,7 +75,7 @@ enum ChannelType {
 }
 
 model Channel {
-  id   String      @id @default(uuid())
+  id   String      @id @default(auto()) @map("_id")
   name String
   type ChannelType @default(TEXT)
 
@@ -96,10 +95,10 @@ model Channel {
 }
 
 model Message {
-  id      String @id @default(uuid())
-  content String @db.Text
+  id      String @id @default(auto()) @map("_id")
+  content String
 
-  fileUrl String? @db.Text
+  fileUrl String?
 
   memberId String
   member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
@@ -117,7 +116,7 @@ model Message {
 }
 
 model Conversation {
-  id String @id @default(uuid())
+  id String @id @default(auto()) @map("_id")
 
   memberOneId String
   memberOne   Member @relation("MemberOne", fields: [memberOneId], references: [id], onDelete: Cascade)
@@ -132,10 +131,10 @@ model Conversation {
 }
 
 model DirectMessage {
-  id      String @id @default(uuid())
-  content String @db.Text
+  id      String @id @default(auto()) @map("_id")
+  content String
 
-  fileUrl String? @db.Text
+  fileUrl String?
 
   memberId String
   member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
